@@ -2,7 +2,7 @@ FROM golang:alpine as builder
 
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY go.mod go.sum ./
+COPY . ./
 ENV GO111MODULE on
 RUN go install
 RUN go build
