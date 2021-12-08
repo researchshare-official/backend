@@ -19,7 +19,7 @@ jobs:
       id: build-image
       uses: redhat-actions/buildah-build@v2
       with:
-        image: researchshare-official/backend
+        image: $GITHUB_REPOSITORY
         tags: latest ${{ github.sha }}
         dockerfiles: |
           ./Dockerfile
