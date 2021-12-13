@@ -9,6 +9,7 @@ Use the following env variables :
 
 * PORT defaults to 3000
 * SESSION_SECRET this one is REQUIRED !!!
+* DATABASE_URL this one is Required to connect to the postgres DB
 
 ```sh
 docker build -t <image_name> .
