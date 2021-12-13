@@ -1,9 +1,11 @@
-const express = require('express')
-const cors = require('cors')
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
+import express from 'express'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import session from 'express-session'
+import dotenv from 'dotenv'
 
-require('dotenv').config()
+dotenv.config({ path: 'backend.env' });
+dotenv.config({ path: 'db.env' });
 
 const app = express()
 const port = process.env.PORT || 3000
