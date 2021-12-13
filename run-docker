@@ -12,4 +12,4 @@ if [ "$(docker images | grep ${IMAGE})" = "" ] || [ "$1" = "--build" ]; then
     docker build . -t ${IMAGE}:${TAG}
 fi
 
-docker run --rm --init ${IMAGE}:${TAG}
+docker run --rm --init --env-file backend.env ${IMAGE}:${TAG}
