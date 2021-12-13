@@ -1,7 +1,15 @@
 # How to run
 
-## Fetch the env from the discord or a random guy
+Fetch the env from the discord or a random guy
 
-### docker build -t <image_name> .
+Use the following env variables :
+* PORT defaults to 3000
+* SESSION_SECRET this one is REQUIRED !!!
 
-### docker run <image_name>
+```sh
+docker build -t <image_name> .
+```
+
+```sh
+docker run --init <image_name>
+```
