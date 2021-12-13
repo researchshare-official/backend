@@ -1,5 +1,5 @@
 import {Papers} from "./papers";
-import {Laboratory} from "./laboratory";
+import {Organisation} from "./organisation";
 
 export interface Users {
     first_name: string;
@@ -8,5 +8,5 @@ export interface Users {
     avatar: string;
     publications: Papers[];
     votes: Papers[];
-    laboratories: Laboratory[];
+    organisations: Organisation[];
 }

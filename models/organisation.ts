@@ -1,7 +1,7 @@
 import {Users} from "./users";
 import {Papers} from "./papers";
 
-export interface Laboratory {
+export interface Organisation {
     Name:         string;
     id:           number;
     location:     string;
