@@ -1,4 +1,5 @@
 import {Papers} from "./papers";
+import {Laboratory} from "./laboratory";
 
 export interface Users {
     first_name: string;
@@ -7,4 +8,5 @@ export interface Users {
     avatar: string;
     publications: Papers[];
     votes: Papers[];
+    laboratories: Laboratory[];
 }
