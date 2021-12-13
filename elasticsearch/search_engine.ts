@@ -1,28 +1,8 @@
-const express = require('express')
-const app = express()
-
 const { Client } = require('@elastic/elasticsearch')
-const client = new Client({ node: 'http://localhost:9200' })
+const client = new Client({ node: 'http://elasticsearch:9200' })
+import fs from "fs";
 
-const fs = require('fs');
-
-app.get('/', (req,res) => {
-  res.send('Hello World')
-})
-
-app.get('/health',(req,res) => {
-  res.send('I')
-})
-
-app.get('/search', async (req, res) => {
-    const a = await searchData('return');
-})
-
-app.get('/index', async (req, res) => {
-    const a = await indexDoc('../../First_Year/Maths/101pong_2019/101pong');
-})
-
-async function searchData(request) {
+export async function se_searchData(request) {
     const result = await client.search({
         index: 'my-index-000001',
         body: {
@@ -50,7 +30,7 @@ function base64_encode(file) {
     return new Buffer(bitmap).toString('base64');
 }
 
-async function indexDoc(file) {
+export async function se_indexDoc(file) {
     const contents = base64_encode(file);
     const indexName = "my-index-000001";
 
@@ -65,7 +45,3 @@ async function indexDoc(file) {
     console.log(res);
     await client.indices.refresh({ index: indexName });
 }
-
-app.listen(8000,() => {
-  console.log("Server up and running")
-})
