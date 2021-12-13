@@ -12,7 +12,7 @@ const app = express()
 const port = process.env.PORT || 3000
 
 const { Client } = require('@elastic/elasticsearch')
-const client = new Client({ node: 'http://localhost:9200' })
+const client = new Client({ node: 'http://elasticsearch:9200' })
 
 app.use(express.json())
 app.use(cors())
@@ -36,7 +36,7 @@ app.get('/search', async (req, res) => {
 })
 
 app.get('/index', async (req, res) => {
-    const a = await indexDoc('../../First_Year/Maths/101pong_2019/101pong');
+    const a = await indexDoc('README.md');
 })
 
 async function searchData(request) {
