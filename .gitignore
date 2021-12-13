@@ -20,3 +20,6 @@ backend
 .env
 node_modules
 *.lock*
+
+backend.env
+db.env

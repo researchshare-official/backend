@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    networks:
+      - researchshare-net
+    env_file:
+      - backend.env
+    init: true
+    restart: on-failure
+
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    networks:
+      - researchshare-net
+    volumes:
+      - researchshare-db:/var/lib/postgresql/data
+    env_file:
+      - db.env
+    restart: on-failure
+
+volumes:
+  researchshare-db:
+networks:
+  researchshare-net:
+
