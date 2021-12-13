@@ -1,24 +1,10 @@
-FROM golang:alpine as builder
+FROM node:14
 
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY . ./
-ENV GO111MODULE on
-RUN go install
-RUN go build
+COPY . .
 
-FROM golang:alpine as runner
-WORKDIR /app
+RUN npm install
 
-RUN addgroup -g 1002 -S golang
-RUN adduser -S echo -u 1002
+EXPOSE 3000
 
-COPY --from=builder --chown=echo:golang /app/backend ./backend
-
-USER echo
-
-EXPOSE 1323
-
-ENV PORT 1323
-
-CMD ["./backend"]
+CMD ["npm", "start"]
