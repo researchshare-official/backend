@@ -3,8 +3,9 @@ FROM node:14
 WORKDIR /app
 COPY . .
 
-RUN yarn --production
+RUN yarn
+RUN yarn build
 
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+CMD ["node", "dist/index.js"]
