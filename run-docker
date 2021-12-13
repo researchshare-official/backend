@@ -1,14 +1,14 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 IMAGE="researchshare_backend"
 TAG="latest"
 
-if [ "$(id -nG | grep docker)" == "" ] && [ "$(whoami)" != "root" ]; then
+if [ "$(id -nG | grep docker)" = "" ] && [ "$(whoami)" != "root" ]; then
     echo "Cannot run docker commands, because there is no proper rights"
     exit
 fi
 
-if [ "$(docker images | grep ${IMAGE})" == "" ] || [ "$1" == "--build" ]; then
+if [ "$(docker images | grep ${IMAGE})" = "" ] || [ "$1" = "--build" ]; then
     docker build . -t ${IMAGE}:${TAG}
 fi
 
