@@ -30,12 +30,12 @@ app.listen(port, () => {
 
 //Search on all index files
 app.get('/search', async (req, res) => {
-    const a = await se_searchData('return');
+    const a = await se_searchData('compilerOptions');
 })
 
 //Index a file to add it to elastic search
 app.get('/index', async (req, res) => {
-    const a = await se_indexDoc('README.md');
+    const a = await se_indexDoc('tsconfig.json');
 })
 
 app.listen(8000,() => {
