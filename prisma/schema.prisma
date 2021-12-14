@@ -29,8 +29,8 @@ model Post {
   postIdRev      Int?
   ScientificPub  Scientific? @relation("Publications", fields: [scienOrcidVote], references: [orcid])
   ScientificVote Scientific? @relation("Vote", fields: [scienOrcidPub], references: [orcid])
-  scienOrcidPub  Int?
-  scienOrcidVote Int?
+  scienOrcidPub  String?
+  scienOrcidVote String?
   PrevRevision   Post?       @relation("NextRevision", fields: [PrevRevisionId], references: [id])
   PrevRevisionId Int?        @unique
 }
@@ -39,12 +39,12 @@ model Organisation {
   id       Int     @id @default(autoincrement())
   name     String  @db.VarChar(255)
   location String?
-  idnumber Int?    @unique
+  idnumber String?    @unique
   Members  User[]
 }
 
 model Scientific {
-  orcid        Int    @unique
+  orcid        String    @unique
   Publications Post[] @relation(name: "Publications")
   Votes        Post[] @relation(name: "Vote")
   userId       Int    @unique
