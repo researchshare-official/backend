@@ -41,7 +41,7 @@ model Post {
   release      DateTime @default(now()) @db.Date
   score        Int      @default(0)
 
-  PostLinks            Post?                          @relation("Links", fields: [postIdLink], references: [id])
+  PostLinks            Post?                           @relation("Links", fields: [postIdLink], references: [id])
   PostRevision         Post?                           @relation("Revisions", fields: [postIdRev], references: [id])
   postIdLink           Int?
   postIdRev            Int?
