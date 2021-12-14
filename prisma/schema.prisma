@@ -10,6 +10,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model PublicationScientificJunction {
+  Publication Post       @relation(fields: [id], references: [id])
+  id          Int
+  Scientific  Scientific @relation(fields: [orcid], references: [orcid])
+  orcid       String
+
+  @@id([id, orcid])
+}
+
+model UpvotesScientificJunction {
+  UpVote     Post       @relation(fields: [id], references: [id])
+  id         Int
+  Scientific Scientific @relation(fields: [orcid], references: [orcid])
+  orcid      String
+
+  @@id([id, orcid])
+}
+
 model Post {
   id           Int      @id @default(autoincrement())
   fields       String[]
@@ -23,32 +41,30 @@ model Post {
   release      DateTime @default(now()) @db.Date
   score        Int      @default(0)
 
-  PostLinks      Post?       @relation("Links", fields: [postIdLink], references: [id])
-  PostRevision   Post?       @relation("Revisions", fields: [postIdRev], references: [id])
-  postIdLink     Int?
-  postIdRev      Int?
-  ScientificPub  Scientific? @relation("Publications", fields: [scienOrcidVote], references: [orcid])
-  ScientificVote Scientific? @relation("Vote", fields: [scienOrcidPub], references: [orcid])
-  scienOrcidPub  String?
-  scienOrcidVote String?
-  PrevRevision   Post?       @relation("NextRevision", fields: [PrevRevisionId], references: [id])
-  PrevRevisionId Int?        @unique
+  PostLinks            Post?                          @relation("Links", fields: [postIdLink], references: [id])
+  PostRevision         Post?                           @relation("Revisions", fields: [postIdRev], references: [id])
+  postIdLink           Int?
+  postIdRev            Int?
+  ScientificPublishers PublicationScientificJunction[]
+  ScientificUpVotes    UpvotesScientificJunction[]
+  PrevRevision         Post?                           @relation("NextRevision", fields: [PrevRevisionId], references: [id])
+  PrevRevisionId       Int?                            @unique
 }
 
 model Organisation {
   id       Int     @id @default(autoincrement())
   name     String  @db.VarChar(255)
   location String?
-  idnumber String?    @unique
+  idnumber String? @unique
   Members  User[]
 }
 
 model Scientific {
-  orcid        String    @unique
-  Publications Post[] @relation(name: "Publications")
-  Votes        Post[] @relation(name: "Vote")
-  userId       Int    @unique
-  User         User   @relation(fields: [userId], references: [id])
+  orcid                String                          @unique
+  ScientificPublishers PublicationScientificJunction[]
+  ScientificUpVotes    UpvotesScientificJunction[]
+  userId               Int                             @unique
+  User                 User                            @relation(fields: [userId], references: [id])
 }
 
 model Profile {
