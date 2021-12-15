@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { Router, Response, Request, NextFunction } from 'express';
 import passport from 'passport';
 import bcrypt from 'bcrypt'
 import prisma from '../prisma'
@@ -7,7 +7,7 @@ import { IGetUserAuthInfoRequest } from '../definitionFile';
 
 const router = Router();
 
-router.post('/register', (req, res) => {
+router.post('/register', (req: Request, res: Response, next: NextFunction) => {
     const name: string = req.body.name || null
     const email: string = req.body.email || null
     const password: string = req.body.password || null
@@ -31,32 +31,34 @@ router.post('/register', (req, res) => {
                             password: hashedPassword,
                         }
                     })
-                    res.send(newUser)
+                    req.login(newUser, (err) => {
+                        res.send(newUser)
+                    })
                 }
             })
     }
 })
 
-router.post('/login', (req: IGetUserAuthInfoRequest, res: Response, next) => {
+router.post('/login', (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
             res.status(400).send(err);
         }
         if (user) {
-            // req.logIn(user, err => {
+            req.login(user, err => {
                 res.send({
                     message: `${user.name} connected`,
                     data: user
                 });
-            // })
+            })
         } else {
             res.status(400).send(info);
         }
     })(req, res, next);
 })
 
-// router.get('/user', (req, res) => {
-    // res.send(req.user);
-// })
+router.get('/user', (req, res) => {
+    res.send(req.user)
+})
 
 export default router;
