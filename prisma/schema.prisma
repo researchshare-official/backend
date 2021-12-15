@@ -9,3 +9,82 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model PublicationScientificJunction {
+  Publication Post       @relation(fields: [id], references: [id])
+  id          Int
+  Scientific  Scientific @relation(fields: [orcid], references: [orcid])
+  orcid       String
+
+  @@id([id, orcid])
+}
+
+model UpvotesScientificJunction {
+  UpVote     Post       @relation(fields: [id], references: [id])
+  id         Int
+  Scientific Scientific @relation(fields: [orcid], references: [orcid])
+  orcid      String
+
+  @@id([id, orcid])
+}
+
+model Post {
+  id           Int      @id @default(autoincrement())
+  fields       String[]
+  title        String
+  Authors      User[]
+  content      String
+  Links        Post[]   @relation(name: "Links")
+  Revisions    Post[]   @relation(name: "Revisions")
+  NextRevision Post?    @relation(name: "NextRevision")
+  sponsored    Boolean  @default(false)
+  release      DateTime @default(now()) @db.Date
+  score        Int      @default(0)
+
+  PostLinks            Post?                           @relation("Links", fields: [postIdLink], references: [id])
+  PostRevision         Post?                           @relation("Revisions", fields: [postIdRev], references: [id])
+  postIdLink           Int?
+  postIdRev            Int?
+  ScientificPublishers PublicationScientificJunction[]
+  ScientificUpVotes    UpvotesScientificJunction[]
+  PrevRevision         Post?                           @relation("NextRevision", fields: [PrevRevisionId], references: [id])
+  PrevRevisionId       Int?                            @unique
+}
+
+model Organisation {
+  id       Int     @id @default(autoincrement())
+  name     String  @db.VarChar(255)
+  location String?
+  idnumber String? @unique
+  Members  User[]
+}
+
+model Scientific {
+  orcid                String                          @unique
+  ScientificPublishers PublicationScientificJunction[]
+  ScientificUpVotes    UpvotesScientificJunction[]
+  userId               Int                             @unique
+  User                 User                            @relation(fields: [userId], references: [id])
+}
+
+model Profile {
+  avatar    String?
+  id        Int     @id @default(autoincrement())
+  bio       String?
+  firstname String? @db.VarChar(255)
+  lastname  String? @db.VarChar(255)
+  userId    Int     @unique
+  User      User    @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  name          String         @db.VarChar(255)
+  email         String         @unique @db.VarChar(255)
+  password      String         @db.VarChar(255)
+  isScientific  Boolean        @default(false)
+  Profile       Profile?
+  Organisations Organisation[]
+  Scientific    Scientific?
+  Posts         Post[]
+}
