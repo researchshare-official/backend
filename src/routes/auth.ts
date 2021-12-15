@@ -57,6 +57,11 @@ router.post('/login', (req: Request, res: Response, next: NextFunction) => {
     })(req, res, next);
 })
 
+router.post('/logout', (req: Request, res: Response, next: NextFunction) => {
+    req.logout();
+    res.end();
+})
+
 router.get('/user', (req, res) => {
     res.send(req.user)
 })
