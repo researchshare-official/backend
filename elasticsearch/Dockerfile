@@ -5,4 +5,3 @@ COPY . /apps/elasticsearch
 RUN ./bin/elasticsearch-plugin install --batch ingest-attachment
 
 EXPOSE 9200
-EXPOSE 9300
