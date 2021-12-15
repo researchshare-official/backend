@@ -2,9 +2,9 @@ const { Client } = require('@elastic/elasticsearch')
 const client = new Client({ node: 'http://elasticsearch:9200' })
 import fs from "fs";
 
-export async function se_searchData(request) {
+export async function searchData(request, indexName) {
     const result = await client.search({
-        index: 'my-index-000001',
+        index: indexName,
         body: {
             query: {
                 term: {
@@ -21,18 +21,21 @@ export async function se_searchData(request) {
     } else {
         console.log("No result");
     }
+    return result;
 }
 
-function base64_encode(file) {
+export function base64_encode(file) {
+    console.log("encodage")
     // read binary data
-    var bitmap = fs.readFileSync(file);
+    let bitmap = fs.readFileSync(file);
     // convert binary data to base64 encoded string
-    return new Buffer(bitmap).toString('base64');
+    let data = Buffer.from(bitmap);
+    let encodedData = data.toString('base64');
+    return encodedData;
 }
 
-export async function se_indexDoc(file) {
+export async function indexDoc(file, indexName) {
     const contents = base64_encode(file);
-    const indexName = "my-index-000001";
 
     const res = await client.index({
         index: indexName,
@@ -44,4 +47,35 @@ export async function se_indexDoc(file) {
     });
     console.log(res);
     await client.indices.refresh({ index: indexName });
+    return res;
+}
+
+export async function createIndex(indexName) {
+    const res = await client.indices.create({
+        index: indexName,
+        body: {
+            settings: {
+                index: {
+                    number_of_replicas: 0
+                }
+            }
+        }
+    });
+    return res;
+}
+
+export async function putPipeline() {
+    const res = await client.ingest.putPipeline({
+        id: "attachment",
+        body: {
+            processors : [
+                {
+                    attachment : {
+                        field : "data"
+                    }
+                }
+            ]
+        }
+    })
+    console.log(res);
 }

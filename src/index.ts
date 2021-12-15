@@ -3,7 +3,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import dotenv from 'dotenv'
-import {se_searchData, se_indexDoc} from "../elasticsearch/search_engine";
+import {searchData, indexDoc, createIndex, putPipeline} from "../elasticsearch/search_engine";
 
 dotenv.config({ path: 'backend.env' });
 dotenv.config({ path: 'db.env' });
@@ -24,20 +24,24 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
-app.listen(port, () => {
-    console.log(`server is running on port ${port}`)
-})
-
 //Search on all index files
 app.get('/search', async (req, res) => {
-    const a = await se_searchData('compilerOptions');
+    const a = await searchData('return', 'ResearchShare');
 })
 
-//Index a file to add it to elastic search
 app.get('/index', async (req, res) => {
-    const a = await se_indexDoc('tsconfig.json');
+    const a = await indexDoc('tsconfig.json', 'ResearchShare');
 })
+
+// app.get('/create', async (req, res) => {
+//     //const a = await createIndex('my-index-000002');
+//     await putPipeline();
+// })
 
 app.listen(8000,() => {
-    console.log("Server up and running")
+    console.log(`server is running on freaking port ${port}`)
+    createIndex("ResearchShare").then(value => {
+        console.log("created index");
+        putPipeline().then(r => console.log("putPipeline"));
+    });
 })

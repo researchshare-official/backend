@@ -19,7 +19,7 @@ services:
     cap_add:
       - IPC_LOCK
     volumes:
-      - .:/apps/elasticsearch
+      - elasticsearch-data:/apps/elasticsearch
     networks:
       - researchshare-net
     ports:
