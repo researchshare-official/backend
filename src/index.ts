@@ -3,6 +3,11 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import dotenv from 'dotenv'
+import passport from 'passport'
+
+import localStrategy from './strategies/local'
+
+import authRoutes from './routes/auth'
 
 dotenv.config({ path: 'backend.env' });
 dotenv.config({ path: 'db.env' });
@@ -18,6 +23,12 @@ app.use(session({
     saveUninitialized: true
 }))
 app.use(cookieParser(process.env.SESSION_SECRET))
+app.use(passport.initialize())
+app.use(passport.session())
+
+localStrategy(passport);
+
+app.use('/auth', authRoutes)
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
