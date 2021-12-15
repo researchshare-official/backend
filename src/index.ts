@@ -3,6 +3,8 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import dotenv from 'dotenv'
+// require('./search_engine')
+import {searchData, indexDoc, createIndex, putPipeline} from "./search_engine";
 
 dotenv.config({ path: 'backend.env' });
 dotenv.config({ path: 'db.env' });
@@ -23,6 +25,24 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
+//Search on all index files
+app.get('/search', async (req, res) => {
+    const a = await searchData('true', 'researchshare');
+})
+
+//Add a file to index
+app.get('/index', async (req, res) => {
+    const a = await indexDoc('tsconfig.json', 'researchshare');
+})
+
+//This command first to initialise
+app.get('/initialise', async (req, res) => {
+    createIndex("researchshare").then(value => {
+        console.log("created index");
+        putPipeline().then(r => console.log("putPipeline"));
+    });
+})
+
 app.listen(port, () => {
-    console.log(`server is running on port ${port}`)
+    console.log(`server is running on freaking port ${port}`)
 })
