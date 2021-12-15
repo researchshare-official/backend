@@ -1,4 +1,30 @@
 -- CreateTable
+CREATE TABLE "Session" (
+    "id" TEXT NOT NULL,
+    "sid" TEXT NOT NULL,
+    "data" TEXT NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Session_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PublicationScientificJunction" (
+    "id" INTEGER NOT NULL,
+    "orcid" TEXT NOT NULL,
+
+    CONSTRAINT "PublicationScientificJunction_pkey" PRIMARY KEY ("id","orcid")
+);
+
+-- CreateTable
+CREATE TABLE "UpvotesScientificJunction" (
+    "id" INTEGER NOT NULL,
+    "orcid" TEXT NOT NULL,
+
+    CONSTRAINT "UpvotesScientificJunction_pkey" PRIMARY KEY ("id","orcid")
+);
+
+-- CreateTable
 CREATE TABLE "Post" (
     "id" SERIAL NOT NULL,
     "fields" TEXT[],
@@ -9,8 +35,6 @@ CREATE TABLE "Post" (
     "score" INTEGER NOT NULL DEFAULT 0,
     "postIdLink" INTEGER,
     "postIdRev" INTEGER,
-    "scienOrcidPub" INTEGER,
-    "scienOrcidVote" INTEGER,
     "PrevRevisionId" INTEGER,
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
@@ -21,14 +45,14 @@ CREATE TABLE "Organisation" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "location" TEXT,
-    "idnumber" INTEGER,
+    "idnumber" TEXT,
 
     CONSTRAINT "Organisation_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Scientific" (
-    "orcid" INTEGER NOT NULL,
+    "orcid" TEXT NOT NULL,
     "userId" INTEGER NOT NULL
 );
 
@@ -68,6 +92,9 @@ CREATE TABLE "_OrganisationToUser" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Session_sid_key" ON "Session"("sid");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Post_PrevRevisionId_key" ON "Post"("PrevRevisionId");
 
 -- CreateIndex
@@ -98,16 +125,22 @@ CREATE UNIQUE INDEX "_OrganisationToUser_AB_unique" ON "_OrganisationToUser"("A"
 CREATE INDEX "_OrganisationToUser_B_index" ON "_OrganisationToUser"("B");
 
 -- AddForeignKey
+ALTER TABLE "PublicationScientificJunction" ADD CONSTRAINT "PublicationScientificJunction_id_fkey" FOREIGN KEY ("id") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PublicationScientificJunction" ADD CONSTRAINT "PublicationScientificJunction_orcid_fkey" FOREIGN KEY ("orcid") REFERENCES "Scientific"("orcid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UpvotesScientificJunction" ADD CONSTRAINT "UpvotesScientificJunction_id_fkey" FOREIGN KEY ("id") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UpvotesScientificJunction" ADD CONSTRAINT "UpvotesScientificJunction_orcid_fkey" FOREIGN KEY ("orcid") REFERENCES "Scientific"("orcid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_postIdLink_fkey" FOREIGN KEY ("postIdLink") REFERENCES "Post"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_postIdRev_fkey" FOREIGN KEY ("postIdRev") REFERENCES "Post"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Post" ADD CONSTRAINT "Post_scienOrcidVote_fkey" FOREIGN KEY ("scienOrcidVote") REFERENCES "Scientific"("orcid") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Post" ADD CONSTRAINT "Post_scienOrcidPub_fkey" FOREIGN KEY ("scienOrcidPub") REFERENCES "Scientific"("orcid") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_PrevRevisionId_fkey" FOREIGN KEY ("PrevRevisionId") REFERENCES "Post"("id") ON DELETE SET NULL ON UPDATE CASCADE;

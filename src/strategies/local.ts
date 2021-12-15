@@ -16,7 +16,7 @@ export default function (passport) {
                 })
                     .then((user) => {
                         if (!user) {
-                            return next(null, false, { message: 'Incorrect username.' });
+                            return next(null, false, { message: 'Incorrect email.' });
                         }
                         bcrypt.compare(password, user.password, (err, isMatch) => {
                             if (err) {
