@@ -11,6 +11,8 @@ router.post('/register', (req: Request, res: Response, next: NextFunction) => {
     const name: string = req.body.name || null
     const email: string = req.body.email || null
     const password: string = req.body.password || null
+    const firstName: string = req.body.firstName || null
+    const lastName: string = req.body.lastName || null
     if (!email || !password) {
         res.status(400).send('Please provide email and password')
     } else {
@@ -33,8 +35,8 @@ router.post('/register', (req: Request, res: Response, next: NextFunction) => {
                                 create: {
                                     avatar: null,
                                     bio: null,
-                                    firstname: null,
-                                    lastname: null
+                                    firstname: firstName,
+                                    lastname: lastName
                                 },
                             },
                         }
