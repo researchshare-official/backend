@@ -51,6 +51,8 @@ router.get('/:name', async (req: any, res: Response) => {
                 userId: user.id
             }
         }))
+    }).catch(() => {
+        res.status(404).send('No user named ' +  req.params.name)
     })
 })
 
