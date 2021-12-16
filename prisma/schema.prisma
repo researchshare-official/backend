@@ -37,6 +37,8 @@ model UpvotesScientificJunction {
 
 model Post {
   id           Int      @id @default(autoincrement())
+  elasticId    String?
+  url          String?
   fields       String[]
   title        String
   Authors      User[]

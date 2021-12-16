@@ -10,6 +10,7 @@ import localStrategy from './strategies/local'
 
 import authRoutes from './routes/auth'
 import profileRoutes from './routes/profile'
+import postRoutes from './routes/posts'
 // require('./search_engine')
 import {searchData, indexDoc, createIndex, putPipeline} from "./search_engine";
 import prisma from './prisma'
@@ -55,6 +56,8 @@ localStrategy(passport);
 app.use('/auth', authRoutes)
 
 app.use('/profile', profileRoutes)
+
+app.use('/post', postRoutes)
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
