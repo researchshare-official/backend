@@ -55,14 +55,12 @@ app.post('/index_file', upload.single('file'), async (req, res) => {
             });
         } else {
             console.log("requ")
-            //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
             let toindex = req.files["file"];
 
-            //Use the mv() method to place the file in upload directory (i.e. "uploads")
-            toindex.mv('/tmp/' + toindex.name);
+            //TODO: DO NOT PUBLISH BECAUSE OF THIS : this allows an exploit to override certain files on the docker container in real time. Must do that because elastic search sucks at removing the path of the name.
+            await toindex.mv('/app/' + toindex.name);
 
-            //send response
-            await indexDoc(os.tmpdir() + '/' + toindex.name, 'researchshare').then(value => {
+            await indexDoc(toindex.name, 'researchshare').then(value => {
                 console.log(value);
                 res.send(value);
             }).catch(e => {
