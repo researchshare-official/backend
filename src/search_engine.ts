@@ -50,6 +50,22 @@ export async function indexDoc(file, indexName) {
     return res;
 }
 
+export async function indexDocValue(file, indexName) {
+    let encodedData = file.toString('base64');
+
+    const res = await client.index({
+        index: indexName,
+        pipeline: "attachment",
+        body: {
+            fileName: "c'est un test",
+            data : encodedData
+        }
+    });
+    console.log(res);
+    await client.indices.refresh({ index: indexName });
+    return res;
+}
+
 export async function createIndex(indexName) {
     const res = await client.indices.create({
         index: indexName,
