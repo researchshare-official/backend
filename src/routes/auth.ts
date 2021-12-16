@@ -47,6 +47,61 @@ router.post('/register', (req: Request, res: Response, next: NextFunction) => {
     }
 })
 
+router.post('/register/scientific', (req: Request, res: Response, next: NextFunction) => {
+    const name: string = req.body.name || null
+    const email: string = req.body.email || null
+    const password: string = req.body.password || null
+    if (!email || !password) {
+        res.status(400).send('Please provide email and password')
+    } else {
+        prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        })
+            .then(async (user) => {
+                if (user) {
+                    res.status(400).send('User already exists')
+                } else {
+                    prisma.scientific.findUnique({
+                        where: {
+                            orcid: req.body.orcid
+                        },
+                    }).then((scientific: any) => {
+                        if (scientific) {
+                            res.status(400).send('Orcid already registered')
+                        }
+                    })
+                    const hashedPassword: string = await bcrypt.hash(password, 10)
+                    const newUser = await prisma.user.create({
+                        data: {
+                            name: name,
+                            email: email,
+                            password: hashedPassword,
+                            Profile: {
+                                create: {
+                                    avatar: null,
+                                    bio: null,
+                                    firstname: null,
+                                    lastname: null
+                                },
+                            },
+                            isScientific: true,
+                            Scientific: {
+                                create: {
+                                    orcid: req.body.orcid
+                                },
+                            },
+                        }
+                    })
+                    req.login(newUser, (err) => {
+                        res.send(newUser)
+                    })
+                }
+            })
+    }
+})
+
 router.post('/login', (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
