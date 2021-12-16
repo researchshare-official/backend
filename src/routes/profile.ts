@@ -46,13 +46,18 @@ router.get('/:name', async (req: any, res: Response) => {
             name: req.params.name
         },
     }).then(async (user: any) => {
-        res.send(await prisma.profile.findUnique({
+        prisma.profile.findUnique({
             where: {
                 userId: user.id
             }
-        }))
-    }).catch(() => {
-        res.status(404).send('No user named ' +  req.params.name)
+        })
+        .then((user) => {
+            if (user) {
+                res.send(user)
+            } else {
+                res.status(404).send('No user named ' +  req.params.name)
+            }
+        })
     })
 })
 
