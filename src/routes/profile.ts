@@ -9,20 +9,24 @@ router.get('/', async (req: any, res: Response) => {
             where: {
                 email: req.user.email
             },
-        }).then(user => {
-            res.send(user)
+        }).then(async (user: any) => {
+            res.send(await prisma.profile.findUnique({
+                where: {
+                    userId: user.id
+                }
+            }))
         })
     }
 })
 
-router.patch('/', async (req: any, res: Response) => {
+router.post('/', async (req: any, res: Response) => {
     if (req.isAuthenticated()) {
         prisma.user.findUnique({
             where: {
                 email: req.user.email
             },
         }).then((user: any) => {
-            prisma.profile.upsert({
+            prisma.profile.update({
                 where: {
                     userId: user.id
                 },
@@ -34,6 +38,7 @@ router.patch('/', async (req: any, res: Response) => {
                 },
             })
         })
+        res.end()
     }
 })
 // router.get('/:email', (req, res) => {
