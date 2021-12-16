@@ -29,6 +29,14 @@ router.post('/register', (req: Request, res: Response, next: NextFunction) => {
                             name: name,
                             email: email,
                             password: hashedPassword,
+                            Profile: {
+                                create: {
+                                    avatar: null,
+                                    bio: null,
+                                    firstname: null,
+                                    lastname: null
+                                },
+                            },
                         }
                     })
                     req.login(newUser, (err) => {
