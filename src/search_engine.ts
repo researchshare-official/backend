@@ -64,6 +64,13 @@ export async function createIndex(indexName) {
     return res;
 }
 
+export async function checkIndex(indexName) {
+    const res = await client.indices.exists({
+        index: indexName,
+    });
+    return res.statusCode;
+}
+
 export async function putPipeline() {
     const res = await client.ingest.putPipeline({
         id: "attachment",

@@ -11,7 +11,7 @@ import localStrategy from './strategies/local'
 import authRoutes from './routes/auth'
 import profileRoutes from './routes/profile'
 // require('./search_engine')
-import {searchData, indexDoc, createIndex, putPipeline} from "./search_engine";
+import {searchData, indexDoc, createIndex, putPipeline, checkIndex} from "./search_engine";
 import prisma from './prisma'
 import multer from "multer";
 import * as os from "os";
@@ -72,13 +72,19 @@ app.get('/search', async (req, res) => {
 //Add a file to index
 app.post('/index_file', upload.single('file'), async (req, res) => {
     try {
+        let indexIsCreated = await checkIndex("researchshare");
+        if (indexIsCreated == 404) {
+            console.log("create index")
+            await createIndex("researchshare");
+            await putPipeline().then(r => console.log("putPipeline"));
+        } else
+            console.log("index already exists")
         if(!req.files) {
             res.send({
                 status: false,
                 message: 'No file uploaded'
             });
         } else {
-            console.log("requ")
             let toindex = req.files["file"];
 
             //TODO: DO NOT PUBLISH BECAUSE OF THIS : this allows an exploit to override certain files on the docker container in real time. Must do that because elastic search sucks at removing the path of the name.
@@ -89,7 +95,6 @@ app.post('/index_file', upload.single('file'), async (req, res) => {
                 res.send(value);
             }).catch(e => {
                 console.log("fail")
-                console.log(e);
                 res.send({result: "error"});
             })
         }
@@ -99,12 +104,12 @@ app.post('/index_file', upload.single('file'), async (req, res) => {
 })
 
 //This command first to initialise
-app.get('/initialise', async (req, res) => {
-    createIndex("researchshare").then(value => {
-        console.log("created index");
-        putPipeline().then(r => console.log("putPipeline"));
-    });
-})
+// app.get('/initialise', async (req, res) => {
+//     createIndex("researchshare").then(value => {
+//         console.log("created index");
+//         putPipeline().then(r => console.log("putPipeline"));
+//     });
+// })
 
 app.listen(port, () => {
     console.log(`server is running on this port ${port}`)
