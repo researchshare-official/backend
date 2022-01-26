@@ -16,6 +16,7 @@ import {createNode, createDocumentNode, getRelationships, makeRelationDocAuthor,
 import prisma from './prisma'
 import multer from "multer";
 import * as os from "os";
+import fs from "fs";
 
 dotenv.config({ path: 'backend.env' });
 dotenv.config({ path: 'db.env' });
@@ -71,8 +72,15 @@ app.get('/search', async (req, res) => {
     await searchData(req.query.text, 'researchshare').then(value => {
         res.send(value);
     }).catch(e => {
-        res.send({result: "error"});
+        res.send(null);
     });
+})
+
+//Get file
+app.get('/rawArticle', async (req, res) => {
+    var data = fs.readFileSync('./' + req.query.articleName, {encoding: 'base64'});
+    res.contentType("application/pdf");
+    res.send(data);
 })
 
 //Add a file to index
