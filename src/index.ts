@@ -77,22 +77,23 @@ app.get('/search', async (req, res) => {
 
 app.post('/create_nodes', async (req, res) => {
     try {
-        console.log("REQ = ", req.body);
-        let res = await createNode("Searcher", "Jean-Michel", "test");
+        console.log("REQ = ", req);
+        let res = await createNode("Searcher", req.query.author, "test");
         console.log(res);
-        res = await createDocumentNode("Nature", "Les olives");
+        res = await createDocumentNode(req.query.category, req.query.title);
         console.log(res);
-        res= await makeRelationDocAuthor("Jean-Michel", "Les olives");
+        res= await makeRelationDocAuthor(req.query.author, req.query.title);
         console.log(res);
     } catch (err) {
         res.status(500).send(err);
     }
 })
 
-app.post('/get_relations', async (req, res) => {
+app.get('/get_relations', async (req, res) => {
     try {
-        let res = await getRelationships("WROTE", 25);
-        console.log(res);
+        let resu = await getRelationships("WROTE", 25);
+        console.log(resu);
+        res.send(resu)
     } catch (err) {
         res.status(500).send(err);
     }
