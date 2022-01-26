@@ -12,6 +12,7 @@ import authRoutes from './routes/auth'
 import profileRoutes from './routes/profile'
 // require('./search_engine')
 import {searchData, indexDoc, createIndex, putPipeline, checkIndex} from "./search_engine";
+import {createNode, createDocumentNode, getRelationships, makeRelationDocAuthor, getNodes, a} from "./neo4j"
 import prisma from './prisma'
 import multer from "multer";
 import * as os from "os";
@@ -58,6 +59,11 @@ app.use('/profile', profileRoutes)
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
+})
+
+app.get('/neo4j', (req, res) => {
+    a()
+    res.send('Test neo4j!')
 })
 
 //Search on all index files
