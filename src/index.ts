@@ -75,6 +75,29 @@ app.get('/search', async (req, res) => {
     });
 })
 
+app.post('/create_nodes', async (req, res) => {
+    try {
+        console.log("REQ = ", req.body);
+        let res = await createNode("Searcher", "Jean-Michel", "test");
+        console.log(res);
+        res = await createDocumentNode("Nature", "Les olives");
+        console.log(res);
+        res= await makeRelationDocAuthor("Jean-Michel", "Les olives");
+        console.log(res);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+})
+
+app.post('/get_relations', async (req, res) => {
+    try {
+        let res = await getRelationships("WROTE", 25);
+        console.log(res);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+})
+
 //Add a file to index
 app.post('/index_file', upload.single('file'), async (req, res) => {
     try {
