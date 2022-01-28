@@ -25,6 +25,20 @@ services:
     ports:
       - "9200:9200"
 
+  neo4j:
+    image: neo4j:3.5
+    container_name: neo4j
+    networks:
+      - researchshare-net
+    ports:
+      - 7474:7474
+      - 7687:7687
+    environment:
+      - NEO4J_AUTH=none
+      - NEO4J_dbms_memory_pagecache_size=1G
+      - NEO4J_dbms.memory.heap.initial_size=1G
+      - NEO4J_dbms_memory_heap_max__size=1G
+
   backend:
     build:
       context: .
@@ -32,6 +46,9 @@ services:
       - "4000:4000"
     networks:
       - researchshare-net
+    depends_on:
+      - elasticsearch
+      - neo4j
     env_file:
       - backend.env
     init: true
