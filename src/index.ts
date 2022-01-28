@@ -76,7 +76,30 @@ app.get('/search', async (req, res) => {
     });
 })
 
-//Get file
+app.post('/create_nodes', async (req, res) => {
+    try {
+        console.log("REQ = ", req);
+        let res = await createNode("Searcher", req.query.author, "test");
+        console.log(res);
+        res = await createDocumentNode(req.query.category, req.query.title);
+        console.log(res);
+        res= await makeRelationDocAuthor(req.query.author, req.query.title);
+        console.log(res);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+})
+
+app.get('/get_relations', async (req, res) => {
+    try {
+        let resu = await getRelationships("WROTE", 25);
+        console.log(resu);
+        res.send(resu)
+    } catch (err) {
+        res.status(500).send(err);
+    }
+})
+
 app.get('/rawArticle', async (req, res) => {
     var data = fs.readFileSync('./' + req.query.articleName, {encoding: 'base64'});
     res.contentType("application/pdf");
